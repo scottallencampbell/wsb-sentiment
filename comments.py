@@ -1,4 +1,3 @@
-import requests
 import json
 import os
 import pandas as pd
@@ -10,15 +9,19 @@ from api import redditApi
 path = './data/comments/'
 
 def downloadComments():
+    print(f'Downloading comments')
     posts = getExistingPosts()
 
     for key in posts:
         filename = f'{path}{posts[key]}.txt'
 
         if not os.path.exists(filename):
-            downloadComments(key, posts[key], filename)
+            downloadCommentsByPost(key, posts[key], filename)
+        else:
+            print(f'Skipping {posts[key]}, file already exists')
 
-def downloadComments(post_id, date, filename):
+def downloadCommentsByPost(post_id, date, filename):
+    print(f'Downloading comments for {date}')
     start = time.time()
     comments = []
     submission = redditApi.submission(post_id)
@@ -43,3 +46,4 @@ def downloadComments(post_id, date, filename):
     end = time.time()
     print(f'Downloaded {len(submission.comments)} comments for {date} in {int(end - start)} seconds')
 
+downloadComments()
