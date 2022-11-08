@@ -1,5 +1,4 @@
 import requests
-from datetime import datetime, timedelta
 import traceback
 import time
 import json
@@ -7,12 +6,14 @@ import csv
 import os
 from os.path import exists
 import dateparser
+from datetime import datetime, timedelta
 
 filename = './data/posts.txt'
 subreddit = 'wallstreetbets' 
 url = f'https://api.pushshift.io/reddit/search/submission/?subreddit={subreddit}&title=Daily&limit=1000&sort=desc&before='
 
 def getExistingPosts():    
+	print(f'Loading posts from flat file')
 	existing_posts = {}
 	csv.register_dialect('piper', delimiter='|', quoting=csv.QUOTE_NONE)
 
@@ -21,6 +22,7 @@ def getExistingPosts():
 			key, value = row
 			existing_posts[key] = value
 	
+	print(f'Loaded {len(existing_posts)} posts from flat file')
 	return existing_posts
 
 def downloadPosts():
