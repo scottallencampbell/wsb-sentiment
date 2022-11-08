@@ -18,7 +18,8 @@ def downloadComments():
         if not os.path.exists(filename):
             downloadComments(key, posts[key], filename)
 
-def downloadComments(post_id, date, filename):
+def downloadComment(post_id, date, filename):
+    print(f'Downloading comments for {date}')
     start = time.time()
     comments = []
     submission = redditApi.submission(post_id)
@@ -32,7 +33,7 @@ def downloadComments(post_id, date, filename):
             comment.link_id[-6:], 
             comment.parent_id[-6:], 
             str(comment.score), 
-            comment.body.replace('|', ''),
+            comment.body.replace('|', '').replace('\r', ' ').replace('\n', ' '),
             datetime.fromtimestamp(comment.created_utc).strftime('%Y-%m-%d %H:%M:%S')
         ])
             
@@ -42,4 +43,5 @@ def downloadComments(post_id, date, filename):
 
     end = time.time()
     print(f'Downloaded {len(submission.comments)} comments for {date} in {int(end - start)} seconds')
+
 

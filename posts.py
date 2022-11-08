@@ -12,8 +12,6 @@ filename = './data/posts.txt'
 subreddit = 'wallstreetbets' 
 url = f'https://api.pushshift.io/reddit/search/submission/?subreddit={subreddit}&title=Daily&limit=1000&sort=desc&before='
 
-start_time = datetime.utcnow()
-
 def getExistingPosts():    
 	existing_posts = {}
 	csv.register_dialect('piper', delimiter='|', quoting=csv.QUOTE_NONE)
@@ -33,7 +31,7 @@ def downloadPosts():
 		existing_posts = getExistingPosts()
 
 	count = 0
-	previous_epoch = int(start_time.timestamp())
+	previous_epoch = int(datetime.utcnow().timestamp())
 	
 	while True:
 		new_url = url + str(previous_epoch)
@@ -43,7 +41,6 @@ def downloadPosts():
 		time.sleep(1)  
 
 		try:
-			print('--> got data')
 			json_data = json_text.json()
 			print(json_data)
 		except json.decoder.JSONDecodeError as ex:
@@ -65,11 +62,8 @@ def downloadPosts():
 			id = str(object['id'])
 
 			if (id not in existing_posts):
-				print(f'-->  writing! {id} not in existing posts list')
 				savePost(object)	
-			else:
-				print(f'-->  skipping :) {id} already in existing posts list')
-
+			
 		print('Downloaded {} posts through {}'.format(count, datetime.fromtimestamp(previous_epoch).strftime('%Y-%m-%d')))
 		
 	print(f'Saved {count} posts')
@@ -107,5 +101,3 @@ def getDateFromTitle(title):
 		
 	if (date is None):
 		print(f'Couldn''t interpret title: {title}')
-
-downloadPosts()
