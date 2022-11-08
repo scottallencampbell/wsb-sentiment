@@ -20,7 +20,7 @@ def downloadComments():
         else:
             print(f'Skipping {posts[key]}, file already exists')
 
-def downloadComment(post_id, date, filename):
+def downloadCommentsByPost(post_id, date, filename):
     print(f'Downloading comments for {date}')
     start = time.time()
     comments = []
