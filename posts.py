@@ -12,25 +12,26 @@ filename = './data/posts.txt'
 subreddit = 'wallstreetbets' 
 url = f'https://api.pushshift.io/reddit/search/submission/?subreddit={subreddit}&title=Daily&limit=1000&sort=desc&before='
 
-def getExistingPosts():    
+csv.register_dialect('piper', delimiter='|', quoting=csv.QUOTE_NONE)
+
+def get_existing_posts():    
 	print(f'Loading posts from flat file')
 	existing_posts = {}
-	csv.register_dialect('piper', delimiter='|', quoting=csv.QUOTE_NONE)
 
 	with open(filename, 'r') as psvfile:
 		for row in csv.reader(psvfile, dialect='piper'):
 			key, value = row
 			existing_posts[key] = value
 	
-	print(f'Loaded {len(existing_posts)} posts from flat file')
+	print(f'Loaded {len(existing_posts)} posts')
 	return existing_posts
 
-def downloadPosts():
+def download_posts():
 	print(f'Saving posts to {filename}')
 	existing_posts = {}
 	
 	if os.path.exists(filename):
-		existing_posts = getExistingPosts()
+		existing_posts = get_existing_posts()
 
 	count = 0
 	previous_epoch = int(datetime.utcnow().timestamp())
@@ -64,24 +65,24 @@ def downloadPosts():
 			id = str(object['id'])
 
 			if (id not in existing_posts):
-				savePost(object)	
+				save_post(object)	
 			
 		print('Downloaded {} posts through {}'.format(count, datetime.fromtimestamp(previous_epoch).strftime('%Y-%m-%d')))
 		
 	print(f'Saved {count} posts')
 	
-def savePost(object):
+def save_post(object):
 	try:
 		title = str(object['title'])
 		
 		if object['is_self'] and 'selftext' in object and title.startswith('Daily Discussion'):	
-			date = getDateFromTitle(title)
+			date = get_date_from_title(title)
 
 			if (date is not None):
 				vals = '|'.join([
-						str(object['id']), 
-						date.strftime('%Y-%m-%d')
-					]) + '\r'
+					str(object['id']), 
+					date.strftime('%Y-%m-%d')
+				]) + '\n'
 
 				with open(filename, 'a') as f:
 					f.write(vals)
@@ -90,7 +91,7 @@ def savePost(object):
 		print(f'Couldn''t interpret post: {object["url"]}')
 		print(traceback.format_exc())
 
-def getDateFromTitle(title):
+def get_date_from_title(title):
 	title = title.replace('Daily Discussion Thread for ', '')
 	title = title.replace('Daily Discussion Thread - ', '')
 

@@ -8,7 +8,7 @@ from api import redditApi
 
 path = './data/comments/'
 
-def downloadComments():
+def download_comments():
     print(f'Downloading comments')
     posts = getExistingPosts()
 
@@ -16,11 +16,11 @@ def downloadComments():
         filename = f'{path}{posts[key]}.txt'
 
         if not os.path.exists(filename):
-            downloadCommentsByPost(key, posts[key], filename)
+            download_comments_by_post(key, posts[key], filename)
         else:
             print(f'Skipping {posts[key]}, file already exists')
 
-def downloadCommentsByPost(post_id, date, filename):
+def download_comments_by_post(post_id, date, filename):
     print(f'Downloading comments for {date}')
     start = time.time()
     comments = []
@@ -41,7 +41,7 @@ def downloadCommentsByPost(post_id, date, filename):
             
     with open(filename, 'w', encoding='utf-8') as f:
         for comment in comments:
-            f.write('|'.join(comment) + '\r')
+            f.write('|'.join(comment) + '\n')
 
     end = time.time()
     print(f'Downloaded {len(submission.comments)} comments for {date} in {int(end - start)} seconds')
