@@ -3,14 +3,14 @@ import os
 import pandas as pd
 import time
 from datetime import datetime, timedelta
-from posts import getExistingPosts
+from posts import get_existing_posts
 from api import redditApi
 
 path = './data/comments/'
 
 def download_comments():
     print(f'Downloading comments')
-    posts = getExistingPosts()
+    posts = get_existing_posts()
 
     for key in posts:
         filename = f'{path}{posts[key]}.txt'

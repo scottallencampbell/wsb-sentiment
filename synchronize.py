@@ -1,6 +1,6 @@
 from posts import download_posts
 from comments import download_comments
-from comments import download_comment
+from comments import download_comments_by_post
 from sentiment import update_sentiments
 
 #posts = download_posts()
@@ -8,4 +8,4 @@ from sentiment import update_sentiments
 
 update_sentiments()
 
-# download_comment('yi6wh1', '2022-10-31', 'data/comments/2022-10-31.txt')
+# download_comments_by_post('yi6wh1', '2022-10-31', 'data/comments/2022-10-31.txt')
