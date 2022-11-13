@@ -20,11 +20,16 @@ model = TFAutoModelForSequenceClassification.from_pretrained(model_ref)
 csv.register_dialect('piper', delimiter='|', quoting=csv.QUOTE_NONE)
 
 def sanitize_post(text):
-    return ' '.join(re.sub('[0-9]+', '', text).split())
+    return re.sub(r'[^a-zA-Z0-9!\',-\\?\\.\\ ]','', text)
 
 def calculate_sentiment(text):
     try:
         sanitized = sanitize_post(text)
+        
+        if sanitized == 'deleted' or sanitized == '[deleted]':
+            print(f'Ignoring deleted text')
+            return None
+
         encoded_text = tokenizer(sanitized, return_tensors='tf')
         output = model(**encoded_text)
         scores = output[0][0].numpy()
@@ -77,7 +82,7 @@ def calculate_aggregate_sentiment(filename):
     roberta.columns = ['neg', 'neu', 'pos']
     roberta = roberta.reset_index().rename(columns={'index': 'id'})
     roberta = roberta.merge(df, how='left')
-    roberta['sentiment'] = (roberta['pos'] - .5) * 2
+    roberta['sentiment'] = roberta['pos'] - roberta['neg']
     roberta['impact'] = roberta['sentiment'] * roberta['score']
 
     save_sentiment(filename, roberta)
@@ -105,4 +110,3 @@ def save_sentiment(filename, roberta):
 
     with open(sentiments_filename, 'a') as f:
         f.write(vals)
-
