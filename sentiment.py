@@ -86,7 +86,7 @@ def calculate_aggregate_sentiment(filename):
     roberta['impact'] = roberta['sentiment'] * roberta['score']
 
     save_sentiment(filename, roberta)
-    
+
 def save_sentiment(filename, roberta):
     date = filename[-14:-4]
     weekday = datetime.strptime(date, '%Y-%m-%d').weekday()
