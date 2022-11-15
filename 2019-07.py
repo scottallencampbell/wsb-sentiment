@@ -1,0 +1,13 @@
+from comments import download_comments_by_post
+download_comments_by_post('c87x3r', '2019-07-02', 'data/comments/2019-07-02.txt')
+download_comments_by_post('c8mrrx', '2019-07-03', 'data/comments/2019-07-03.txt')
+download_comments_by_post('c9epea', '2019-07-05', 'data/comments/2019-07-05.txt')
+download_comments_by_post('cazfen', '2019-07-09', 'data/comments/2019-07-09.txt')
+download_comments_by_post('cbfc3z', '2019-07-10', 'data/comments/2019-07-10.txt')
+download_comments_by_post('cc9g83', '2019-07-12', 'data/comments/2019-07-12.txt')
+download_comments_by_post('cdvkq7', '2019-07-16', 'data/comments/2019-07-16.txt')
+download_comments_by_post('cebd84', '2019-07-17', 'data/comments/2019-07-17.txt')
+download_comments_by_post('cf66te', '2019-07-19', 'data/comments/2019-07-19.txt')
+download_comments_by_post('cgr6xz', '2019-07-23', 'data/comments/2019-07-23.txt')
+download_comments_by_post('ch6rdn', '2019-07-24', 'data/comments/2019-07-24.txt')
+download_comments_by_post('ck6zrp', '2019-07-31', 'data/comments/2019-07-31.txt')
