@@ -51,6 +51,6 @@ for i in range(0, len(posts), stride):
 		value = list(posts.items())[j]
 		
 		with open(splitname, 'a') as f:
-			f.write(f'download_comments_by_post(\'{value[0]}\', \'{value[1]}\', \'data/comments/{value[1]}.txt\')\n')
+			f.write(f'download_comments_by_post(\'{value[0]}\', \'{value[1]}\', \'./data/comments/{value[1]}.txt\')\n')
 
 	counter = counter + 1
