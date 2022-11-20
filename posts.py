@@ -44,8 +44,7 @@ def download_posts():
 		time.sleep(1)  
 
 		try:
-			json_data = json_text.json()
-			print(json_data)
+			json_data = json_text.json()			
 		except json.decoder.JSONDecodeError as ex:
 			print(f'Exception: {ex}, {json_text}')
 			time.sleep(1)
