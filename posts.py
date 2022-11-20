@@ -12,19 +12,23 @@ filename = './data/posts.txt'
 subreddit = 'wallstreetbets' 
 url = f'https://api.pushshift.io/reddit/search/submission/?subreddit={subreddit}&title=Daily&limit=1000&sort=desc&before='
 
+earliest_date = '2022-11-01' if os.path.exists(filename) else '2019-07-01'
+earliest_post_timestamp = int(datetime.strptime(earliest_date, '%Y-%m-%d').timestamp())
+
 csv.register_dialect('piper', delimiter='|', quoting=csv.QUOTE_NONE)
 
 def get_existing_posts():    
 	print(f'Loading posts from flat file')
-	existing_posts = {}
+	posts = {}
 
 	with open(filename, 'r') as psvfile:
 		for row in csv.reader(psvfile, dialect='piper'):
 			key, value = row
-			existing_posts[key] = value
+			posts[key] = value
 	
-	print(f'Loaded {len(existing_posts)} posts')
-	return existing_posts
+	print(f'Loaded {len(posts)} posts')
+
+	return posts
 
 def download_posts():
 	print(f'Saving posts to {filename}')
@@ -32,11 +36,14 @@ def download_posts():
 	
 	if os.path.exists(filename):
 		existing_posts = get_existing_posts()
-
+	
 	count = 0
 	previous_epoch = int(datetime.utcnow().timestamp())
 	
 	while True:
+		if previous_epoch < earliest_post_timestamp:
+			break
+
 		new_url = url + str(previous_epoch)
 		print(new_url)
 		
@@ -62,7 +69,7 @@ def download_posts():
 			previous_epoch = object['created_utc'] - 1
 			count += 1	
 			id = str(object['id'])
-
+			
 			if (id not in existing_posts):
 				save_post(object)	
 			
@@ -76,8 +83,8 @@ def save_post(object):
 		
 		if object['is_self'] and 'selftext' in object and title.startswith('Daily Discussion'):	
 			date = get_date_from_title(title)
-
-			if (date is not None):
+	
+			if date is not None and date.timestamp() > earliest_post_timestamp:
 				vals = '|'.join([
 					str(object['id']), 
 					date.strftime('%Y-%m-%d')
@@ -94,7 +101,6 @@ def get_date_from_title(title):
 	title = title.replace('Daily Discussion Thread for ', '')
 	title = title.replace('Daily Discussion Thread - ', '')
 
-	print(title)
 	try:
 		date = dateparser.parse(title)
 		return date
