@@ -18,7 +18,8 @@ def download_comments():
         
 def download_comments_by_post(post_id, date, filename):
     if os.path.exists(filename):
-        print(f'Skipping {date}.txt, file already exists')
+        #print(f'Skipping {date}.txt, file already exists')
+        True
     else:
         print(f'Downloading comments for {date}')
         start = time.time()
