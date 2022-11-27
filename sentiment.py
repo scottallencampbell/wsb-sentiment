@@ -52,14 +52,19 @@ def update_sentiments():
                 key, value = row[:2]
                 existing_sentiments[key] = value
 
+    print(f'Loaded {len(existing_sentiments)} existing sentiments from flat file')
+    
     print(f'Getting comments files')
     comments_files = os.listdir(comments_path)
 
+    print(f'Got {len(comments_files)} comments files')
+    
     for comments_file in comments_files:
         date = comments_file[-14:-4]
         
         if date in existing_sentiments:
-            print(f'Skipping {date}.txt, this date has already been evaluated')
+            #print(f'Skipping {date}.txt, this date has already been evaluated')
+            x = 1
         else:
             print(f'Calculating sentiment for {date}.txt')
             calculate_aggregate_sentiment(f'{comments_path}{comments_file}')

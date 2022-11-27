@@ -3,8 +3,8 @@ from comments import download_comments
 from comments import download_comments_by_post
 from sentiment import update_sentiments
 
-posts = download_posts()
-comments = download_comments()
+#posts = download_posts()
+#comments = download_comments()
 
 update_sentiments()
 
