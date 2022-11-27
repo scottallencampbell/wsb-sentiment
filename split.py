@@ -34,7 +34,7 @@ with open(filename, 'r') as psvfile:
 
 thread = 0
 splitname = ''
-stride = math.floor(len(posts)/threads)
+stride = math.ceil(len(posts)/threads)
 counter = 0
 
 for i in range(0, len(posts), stride):

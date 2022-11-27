@@ -65,8 +65,12 @@ def update_sentiments():
             calculate_aggregate_sentiment(f'{comments_path}{comments_file}')
 
 def calculate_aggregate_sentiment(filename):
+    
     df = pd.read_csv(filename, sep='|', index_col=False,  
         names=['id', 'linkid', 'parentid', 'score', 'body', 'timestamp'])
+
+    if len(df) == 0:
+        return
 
     results = {}
 
