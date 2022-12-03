@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 sentiments_file = './data/sentiments.txt'
 comments_path = './data/comments/'
-threads = 3
+threads = 5
 
 csv.register_dialect('piper', delimiter='|', quoting=csv.QUOTE_NONE)
 
