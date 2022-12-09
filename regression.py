@@ -16,7 +16,7 @@ from keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout, Dropout,
 from keras.models import Sequential
 from keras.utils import to_categorical
 from keras.callbacks import EarlyStopping
-from sklearn.preprocessing import minmax_scale
+from sklearn.preprocessing import MinMaxScaler
 
 sentiments_filename = './data/sentiments.txt'
 prices_filename = './data/sp500.txt'
@@ -70,14 +70,16 @@ sentiments.drop(delayed, inplace=True)
 df = pd.merge(prices, sentiments, how='inner', left_on='date', right_on='next_market_date')
 
 # df[['change%', 'sentiment_mean', 'sentiment_std', 'impact_mean', 'impact_std', 'weekday', 'count']] = minmax_scale(df[['change%', 'sentiment_mean', 'sentiment_std', 'impact_mean', 'impact_std', 'weekday', 'count']])
-df['change%'] = minmax_scale(df['change%'])
+# df[['change%', 'count']] = minmax_scale(df[['change%', 'count']])
 
-#plot(df)
 #X = df[['count', 'sentiment_mean', 'sentiment_std', 'impact_mean', 'impact_std']]
-X = df[['sentiment_mean', 'sentiment_std', 'weekday', 'count']]
+X = df[['sentiment_mean', 'sentiment_std']] #, 'weekday', 'count']]
 #X = df[['sentiment_mean', 'sentiment_std', 'weekday']]
 #y = df['change%']
 y = df['up_down']
+
+X = (X - X.min()) / (X.max() - X.min())
+#y = (y - y.min()) / (y.max() - y.min())
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 
@@ -86,11 +88,26 @@ lr.fit(X_train, y_train)
 lr.score(X_test, y_test)
 
 nn = Sequential([
-    Dense(4, input_shape=(4,), activation='relu'),
-    Dense(12, activation='relu'),
-    Dense(1, activation='sigmoid')
+    Dense(10, input_shape=(2,), activation=None),
+    Dense(512, activation='relu'),
+    Dense(64, activation='relu'),
+    Dense(2, activation='softmax')
     ])
 
-nn.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+nn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-nn.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=50, batch_size=10)
+history = nn.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=20, batch_size=10)
+
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'])
+plt.show()
+
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'])
+plt.show()
